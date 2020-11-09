@@ -4,9 +4,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -51,7 +49,7 @@ public class HelloResource {
 //			System.out.println(p);
 //		}
 
-//		logger.info("i said hello");
+		logger.info("i said hello");
 
 		String m = config.getOptionalValue("greeting.message", String.class).orElse("hello");
 		String w = config.getOptionalValue("greeting.who", String.class).orElse("unknown");
