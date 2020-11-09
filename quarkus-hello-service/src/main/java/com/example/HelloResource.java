@@ -16,10 +16,6 @@ import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
-import com.example.beans.Food;
-import com.example.beans.GreetingEvent;
-import com.example.beans.Translator;
-
 @Path("/api/hello")
 public class HelloResource {
 
@@ -37,13 +33,6 @@ public class HelloResource {
 	@Inject
 	Config config;
 
-	@Inject
-	Translator translator;
-
-	@Inject
-	@Named("non-veg")
-	Food food;
-
 	@PostConstruct
 	public void init() {
 		// ...
@@ -53,9 +42,6 @@ public class HelloResource {
 	public void destroy() {
 		// ..
 	}
-
-	@Inject
-	Event<GreetingEvent> event;
 
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -67,14 +53,11 @@ public class HelloResource {
 
 //		logger.info("i said hello");
 
-//		String m = config.getOptionalValue("greeting.message", String.class).orElse("hello");
-//		String w = config.getOptionalValue("greeting.who", String.class).orElse("unknown");
+		String m = config.getOptionalValue("greeting.message", String.class).orElse("hello");
+		String w = config.getOptionalValue("greeting.who", String.class).orElse("unknown");
 //
-//		return m + " " + w;
+		return m + " " + w;
 
-		event.fire(new GreetingEvent());
-
-		return translator.translate("hello");
 	}
 
 }
