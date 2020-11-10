@@ -21,8 +21,10 @@ public class TxrService {
 //	@Inject
 //	UserTransaction userTransaction;
 
-	@Transactional(value = TxType.REQUIRED,rollbackOn = {RuntimeException.class},dontRollbackOn = {}) 
+	@Transactional(value = TxType.REQUIRED, rollbackOn = { RuntimeException.class }, dontRollbackOn = {})
 	public void doTxr(double amount, String fromAccNum, String toAccNum) {
+
+		// ----------------------------------------------------------------
 
 		Account fromAccount = accountRepository.findById(fromAccNum);
 		Account toAccount = accountRepository.findById(toAccNum);
@@ -30,9 +32,10 @@ public class TxrService {
 		fromAccount.setBalance(fromAccount.getBalance() - amount);
 		toAccount.setBalance(toAccount.getBalance() + amount);
 
-//		Account.update("balance=?1 where num=?2", fromAccount.getBalance(),fromAccount.getNum());
-//		Account.update("balance=?1 where num=?2", toAccount.getBalance(),toAccount.getNum());
+		Account.update("balance=?1 where num=?2", fromAccount.getBalance(), fromAccount.getNum());
+		Account.update("balance=?1 where num=?2", toAccount.getBalance(), toAccount.getNum());
 //		
+		// ----------------------------------------------------------------
 
 		Txn debitTxn = new Txn();
 		debitTxn.setAmount(amount);
@@ -48,6 +51,8 @@ public class TxrService {
 
 		debitTxn.persist();
 		creditTxn.persist();
+
+		// ----------------------------------------------------------------
 
 	}
 

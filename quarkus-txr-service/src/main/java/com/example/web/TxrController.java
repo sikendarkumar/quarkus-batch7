@@ -6,6 +6,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.example.service.TxrService;
 
@@ -18,10 +19,10 @@ public class TxrController {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public TxrResponse doTxr(TxrRequest request) {
+	public Response doTxr(TxrRequest request) {
 		txrService.doTxr(request.getAmount(), request.getFromAccountNumber(), request.getToAccountNumber());
-		TxrResponse response = new TxrResponse();
-		response.setMessage("transfer successfull");
-		return response;
+		TxrResponse txrResponse = new TxrResponse();
+		txrResponse.setMessage("transfer successfull");
+		return Response.status(200).entity(txrResponse).build();
 	}
 }
