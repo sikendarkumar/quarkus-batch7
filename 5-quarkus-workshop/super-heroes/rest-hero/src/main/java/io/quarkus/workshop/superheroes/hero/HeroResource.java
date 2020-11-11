@@ -1,5 +1,6 @@
 package io.quarkus.workshop.superheroes.hero;
 
+import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
@@ -20,6 +21,7 @@ public class HeroResource {
     @Inject
     HeroService service;
 
+    @Counted(name = "randomhero rest endpoint")  // proxy / interceptor
     @GET
     @Path("/random")
     public Response getRandomHero() {
