@@ -1,8 +1,17 @@
 package io.quarkus.workshop.superheroes.fight;
 
+import static javax.transaction.Transactional.TxType.REQUIRED;
+import static javax.transaction.Transactional.TxType.SUPPORTS;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Random;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 
@@ -10,14 +19,6 @@ import io.quarkus.workshop.superheroes.fight.client.Hero;
 import io.quarkus.workshop.superheroes.fight.client.HeroService;
 import io.quarkus.workshop.superheroes.fight.client.Villain;
 import io.quarkus.workshop.superheroes.fight.client.VillainService;
-
-import javax.transaction.Transactional;
-import java.time.Instant;
-import java.util.List;
-import java.util.Random;
-
-import static javax.transaction.Transactional.TxType.REQUIRED;
-import static javax.transaction.Transactional.TxType.SUPPORTS;
 
 @ApplicationScoped
 @Transactional(value = SUPPORTS)
@@ -30,7 +31,7 @@ public class FightService {
 	@Inject
 	@RestClient
 	HeroService heroService;
-	
+
 	@Inject
 	@RestClient
 	VillainService villainService;
@@ -43,7 +44,6 @@ public class FightService {
 		return Fight.findById(id);
 	}
 
-	
 	public Fighters findRandomFighters() {
 		// T1
 		Hero hero = findRandomHero(); // 4s
@@ -55,12 +55,35 @@ public class FightService {
 
 	}
 
+	@Fallback(fallbackMethod = "fallbackRandomHero")
 	Hero findRandomHero() {
 		return heroService.findRandomHero();
 	}
 
+	@Fallback(fallbackMethod = "fallbackRandomVillain")
 	Villain findRandomVillain() {
 		return villainService.findRandomVillain();
+	}
+	
+	
+	public Hero fallbackRandomHero() {
+	    LOGGER.warn("Falling back on Hero");
+	    Hero hero = new Hero();
+	    hero.name = "Fallback hero";
+	    hero.picture = "https://dummyimage.com/280x380/1e8fff/ffffff&text=Fallback+Hero";
+	    hero.powers = "Fallback hero powers";
+	    hero.level = 1;
+	    return hero;
+	}
+	
+	public Villain fallbackRandomVillain() {
+	    LOGGER.warn("Falling back on Villain");
+	    Villain villain = new Villain();
+	    villain.name = "Fallback villain";
+	    villain.picture = "https://dummyimage.com/280x380/b22222/ffffff&text=Fallback+Villain";
+	    villain.powers = "Fallback villain powers";
+	    villain.level = 2;
+	    return villain;
 	}
 
 	@Transactional(REQUIRED)
