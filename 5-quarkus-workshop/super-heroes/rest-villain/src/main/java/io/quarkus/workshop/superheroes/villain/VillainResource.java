@@ -4,6 +4,7 @@ package io.quarkus.workshop.superheroes.villain;
 // end::adocResource[]
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 // tag::adocResource[]
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -54,7 +55,7 @@ public class VillainResource {
     @Path("/random")
     public Response getRandomVillain() {
         Villain villain = service.findRandomVillain();
-        LOGGER.debug("Found random villain " + villain);
+        LOGGER.info("Found random villain " + villain);
         return Response.ok(villain).build();
     }
 
